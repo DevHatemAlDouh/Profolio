@@ -1,0 +1,260 @@
+@import "tailwindcss";
+
+:root {
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color-scheme: dark;
+  background: #080d17;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+}
+
+body {
+  min-width: 320px;
+  margin: 0;
+  background: #080d17;
+}
+
+::selection {
+  color: #071014;
+  background: #64e8dc;
+}
+
+.tech-theme {
+  --tech-bg: #080d17;
+  --tech-panel: #0e1624;
+  --tech-panel-raised: #121e2e;
+  --tech-line: #243248;
+  --tech-text: #e7eef8;
+  --tech-muted: #9aaac0;
+  --tech-accent: #65e8dc;
+  --tech-accent-strong: #a4fff3;
+  color: var(--tech-text);
+  background:
+    radial-gradient(ellipse at 50% -18%, rgb(33 82 105 / 28%), transparent 48%),
+    var(--tech-bg);
+}
+
+.tech-theme header {
+  color: var(--tech-text);
+}
+
+.tech-theme header nav {
+  border-color: var(--tech-line);
+  background: rgb(15 24 38 / 82%);
+  backdrop-filter: blur(16px);
+}
+
+.tech-theme header nav a[aria-current="page"],
+.tech-theme #home a[href="#work"] {
+  color: #071014;
+  background: var(--tech-accent);
+}
+
+.tech-theme header nav a:not([aria-current="page"]) {
+  color: var(--tech-muted);
+}
+
+.tech-theme header > a:first-child > span:first-child {
+  background: #122335;
+  color: var(--tech-accent);
+  box-shadow: inset 0 0 0 1px rgb(101 232 220 / 28%);
+}
+
+.tech-theme header nav a[aria-current="page"]:hover,
+.tech-theme #home a[href="#work"]:hover {
+  background: var(--tech-accent-strong);
+}
+
+.tech-theme header > a:last-child {
+  border-color: var(--tech-line);
+}
+
+.tech-theme #home {
+  position: relative;
+  isolation: isolate;
+}
+
+.tech-theme #home::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0 -12vw;
+  background-image:
+    linear-gradient(rgb(101 232 220 / 4%) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(101 232 220 / 4%) 1px, transparent 1px);
+  background-size: 48px 48px;
+  content: "";
+  mask-image: linear-gradient(to bottom, black, transparent 82%);
+}
+
+.tech-theme #home h1,
+.tech-theme #work h2,
+.tech-theme #about h2,
+.tech-theme #contact h2 {
+  color: var(--tech-text);
+}
+
+.tech-theme #home h1 span,
+.tech-theme #about h2 span,
+.tech-theme #contact h2 span {
+  color: var(--tech-accent);
+}
+
+.tech-theme #work > div > div:first-child > div > p,
+.tech-theme #about > div:first-child > p,
+.tech-theme #contact > div:first-child > div > div > p:first-child {
+  color: var(--tech-accent);
+}
+
+.tech-theme #home > div:first-child > div:first-child,
+.tech-theme #home > div:first-child > div:last-child span {
+  border-color: var(--tech-line);
+  background-color: rgb(16 27 42 / 82%);
+  color: var(--tech-muted);
+}
+
+.tech-theme #home > div:first-child > div:first-child span span {
+  background-color: var(--tech-accent);
+  box-shadow: 0 0 16px rgb(101 232 220 / 55%);
+}
+
+.tech-theme #home > div:first-child > p,
+.tech-theme #home > div:first-child > a[href="#about"],
+.tech-theme #work > div > div:first-child > p:last-child,
+.tech-theme #work article p,
+.tech-theme #about > div:last-child > p,
+.tech-theme footer {
+  color: var(--tech-muted);
+}
+
+.tech-theme #home > div:first-child > div:nth-last-child(2) {
+  border-color: var(--tech-line);
+}
+
+.tech-theme #home > div:first-child > div:last-child span {
+  border-radius: 0.65rem;
+}
+
+.tech-theme #home > div:nth-child(2) > div:first-child {
+  border-color: rgb(101 232 220 / 24%);
+}
+
+.tech-theme #home > div:nth-child(2) > div:nth-child(2) {
+  filter: hue-rotate(34deg) saturate(0.82);
+  box-shadow: 0 24px 90px rgb(0 0 0 / 35%), 0 0 55px rgb(101 232 220 / 9%);
+}
+
+.tech-theme #home > div:nth-child(2) > div:last-child {
+  border-color: var(--tech-line);
+  background: rgb(15 24 38 / 94%);
+  color: var(--tech-text);
+}
+
+.tech-theme #home > div:nth-child(2) > div:last-child > div > span {
+  background: rgb(101 232 220 / 13%);
+  color: var(--tech-accent);
+}
+
+.tech-theme #work {
+  border-block: 1px solid rgb(36 50 72 / 65%);
+  background: rgb(10 16 27 / 78%);
+}
+
+.tech-theme #work article {
+  border-color: var(--tech-line);
+  background: linear-gradient(155deg, rgb(18 30 46 / 96%), rgb(12 19 31 / 98%));
+  box-shadow: 0 12px 35px rgb(0 0 0 / 14%);
+}
+
+.tech-theme #work article:hover {
+  border-color: rgb(101 232 220 / 42%);
+  box-shadow: 0 18px 45px rgb(0 0 0 / 24%), 0 0 28px rgb(101 232 220 / 6%);
+}
+
+.tech-theme #work article > a {
+  border-bottom: 1px solid var(--tech-line);
+  background: linear-gradient(135deg, #10293a, #172338 55%, #132d35);
+}
+
+.tech-theme #work article > a > span:nth-child(2) {
+  border-color: rgb(101 232 220 / 25%);
+  background: rgb(11 19 30 / 75%);
+  color: var(--tech-accent-strong);
+}
+
+.tech-theme #work article > a > span:last-child {
+  background: #101b2a;
+  color: var(--tech-accent);
+}
+
+.tech-theme #work article h3 {
+  color: var(--tech-text);
+}
+
+.tech-theme #work article > div > div:first-child > span {
+  color: var(--tech-accent);
+}
+
+.tech-theme #work article img {
+  border-radius: 0.25rem;
+}
+
+.tech-theme #work [aria-live="polite"] > p,
+.tech-theme #work [aria-live="polite"] > div[role="alert"] {
+  border-color: var(--tech-line);
+  background: var(--tech-panel);
+  color: var(--tech-muted);
+}
+
+.tech-theme #about {
+  color: var(--tech-text);
+}
+
+.tech-theme #about > div:last-child > div {
+  border-color: var(--tech-line);
+}
+
+.tech-theme #about > div:last-child > div > div {
+  border-color: var(--tech-line);
+  background: var(--tech-panel);
+  color: #c4d2e3;
+}
+
+.tech-theme #contact > div:first-child {
+  border: 1px solid #263a50;
+  background:
+    radial-gradient(ellipse at 85% 0%, rgb(54 142 154 / 19%), transparent 45%),
+    linear-gradient(135deg, #101c2c, #0c1421 70%);
+  box-shadow: 0 25px 80px rgb(0 0 0 / 22%);
+}
+
+.tech-theme #contact > div:first-child > div a {
+  color: #071014;
+  background: var(--tech-accent);
+}
+
+.tech-theme #contact > div:first-child > div a:hover {
+  background: var(--tech-accent-strong);
+}
+
+.tech-theme footer a:hover {
+  color: var(--tech-accent);
+}
+
+.tech-theme a:focus-visible {
+  outline: 2px solid var(--tech-accent);
+  outline-offset: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
