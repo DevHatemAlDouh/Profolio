@@ -14,8 +14,12 @@ const config: PortfolioConfig = {
   contactHeading: <>Let&apos;s build<br /><span className="font-serif font-normal italic text-[#d6f36a]">something good.</span></>,
 }
 
-function WebDevPage() {
-  return <PortfolioPage config={config} />
+type WebDevPageProps = {
+  onPageChange: (isGame: boolean) => void
+}
+
+function WebDevPage({ onPageChange }: WebDevPageProps) {
+  return <PortfolioPage config={config} onPageChange={onPageChange} />
 }
 
 export default WebDevPage

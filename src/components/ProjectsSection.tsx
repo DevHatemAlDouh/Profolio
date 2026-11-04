@@ -4,11 +4,12 @@ import ArrowIcon from './ArrowIcon'
 type ProjectsSectionProps = {
   isGame: boolean
   projects: ProfolioRepository[]
+  cacheUpdatedAt: string | null
   loading: boolean
   error: string | null
 }
 
-function ProjectsSection({ isGame, projects, loading, error }: ProjectsSectionProps) {
+function ProjectsSection({ isGame, projects, cacheUpdatedAt, loading, error }: ProjectsSectionProps) {
   return (
     <section id="work" className="bg-white py-20 sm:py-28">
       <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
@@ -19,26 +20,28 @@ function ProjectsSection({ isGame, projects, loading, error }: ProjectsSectionPr
           </div>
           <p className="max-w-xs text-sm leading-6 text-[#777d72]">
             {loading
-              ? 'Checking public GitHub repositories for the Profolio marker…'
+              ? 'Loading cached projects…'
               : `${projects.length} selected public repositories marked for Profolio, sorted by recent activity.`}
           </p>
         </div>
         <div aria-live="polite" aria-busy={loading}>
           {loading && (
             <p className="rounded-2xl border border-[#e5e7df] bg-[#f7f7f2] p-8 text-center text-sm text-[#6e7469]">
-              Connecting to GitHub…
+              Loading projects…
             </p>
           )}
           {error && (
             <div role="alert" className="rounded-2xl border border-[#e7c9bd] bg-[#fff8f4] p-8 text-center">
-              <p className="font-medium text-[#593b32]">Projects could not be loaded from GitHub.</p>
+              <p className="font-medium text-[#593b32]">Projects could not be loaded.</p>
               <p className="mt-2 text-sm text-[#80685e]">{error}</p>
               <button type="button" onClick={() => window.location.reload()} className="mt-4 rounded-full bg-[#20251f] px-4 py-2 text-sm text-white hover:bg-[#414a3b]">Try again</button>
             </div>
           )}
           {!loading && !error && projects.length === 0 && (
             <p className="rounded-2xl border border-[#e5e7df] bg-[#f7f7f2] p-8 text-center text-sm text-[#6e7469]">
-              No {isGame ? 'game' : 'web or software'} repositories found.
+              {cacheUpdatedAt === 'not-yet-generated'
+                ? 'The project cache is waiting for its first update. Run the Update repository cache workflow in GitHub Actions.'
+                : `No ${isGame ? 'game' : 'web or software'} repositories found.`}
             </p>
           )}
           {!loading && !error && projects.length > 0 && (

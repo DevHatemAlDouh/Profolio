@@ -22,17 +22,12 @@ export type PortfolioConfig = {
 
 type PortfolioPageProps = {
   config: PortfolioConfig
+  onPageChange: (isGame: boolean) => void
 }
 
-function PortfolioPage({ config }: PortfolioPageProps) {
-  const { repositories, loading, error } = useProfolioRepositories()
-  const projects = repositories.filter((repository) => {
-    const isGameRepository =
-      repository.language === 'GDScript' ||
-      repository.topics.some((topic) => ['game', 'gamedev', 'godot'].includes(topic.toLowerCase())) ||
-      /game|fabric|bonga|hox|alphabet/i.test(repository.name)
-    return isGameRepository === config.isGame
-  })
+function PortfolioPage({ config, onPageChange }: PortfolioPageProps) {
+  const { repositories, cacheUpdatedAt, loading, error } = useProfolioRepositories()
+  const projects = repositories.filter((repository) => repository.isGame === config.isGame)
 
   useEffect(() => {
     document.title = config.title
@@ -40,7 +35,7 @@ function PortfolioPage({ config }: PortfolioPageProps) {
 
   return (
     <main className="tech-theme min-h-screen font-sans">
-      <PortfolioHeader isGame={config.isGame} />
+      <PortfolioHeader isGame={config.isGame} onPageChange={onPageChange} />
       <HeroSection
         isGame={config.isGame}
         role={config.role}
@@ -48,7 +43,13 @@ function PortfolioPage({ config }: PortfolioPageProps) {
         intro={config.intro}
         skills={config.skills}
       />
-      <ProjectsSection isGame={config.isGame} projects={projects} loading={loading} error={error} />
+      <ProjectsSection
+        isGame={config.isGame}
+        projects={projects}
+        cacheUpdatedAt={cacheUpdatedAt}
+        loading={loading}
+        error={error}
+      />
       <AboutSection
         eyebrow={config.aboutEyebrow}
         heading={config.aboutHeading}

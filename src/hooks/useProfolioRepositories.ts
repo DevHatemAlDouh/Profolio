@@ -23,185 +23,98 @@ type ReadmeBadge = {
 
 export type ProfolioRepository = GitHubRepository & {
   badges: ReadmeBadge[]
+  isGame: boolean
 }
 
-const profolioMarker = '<!-- {use profolio} -->'
+type RepositoryCache = {
+  updatedAt: string
+  repositories: ProfolioRepository[]
+}
 
-function isGitHubRepository(value: unknown): value is GitHubRepository {
-  if (typeof value !== 'object' || value === null) return false
-  const repo = value as Record<string, unknown>
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null
+}
+
+function isProfolioRepository(value: unknown): value is ProfolioRepository {
+  if (!isRecord(value)) return false
+  const repository = value
   return (
-    typeof repo.id === 'number' &&
-    typeof repo.name === 'string' &&
-    typeof repo.full_name === 'string' &&
-    typeof repo.default_branch === 'string' &&
-    typeof repo.html_url === 'string' &&
-    (typeof repo.description === 'string' || repo.description === null) &&
-    (typeof repo.language === 'string' || repo.language === null) &&
-    typeof repo.stargazers_count === 'number' &&
-    typeof repo.forks_count === 'number' &&
-    typeof repo.updated_at === 'string' &&
-    typeof repo.fork === 'boolean' &&
-    typeof repo.archived === 'boolean' &&
-    Array.isArray(repo.topics) &&
-    repo.topics.every((topic) => typeof topic === 'string')
+    typeof repository.id === 'number' &&
+    typeof repository.name === 'string' &&
+    typeof repository.full_name === 'string' &&
+    typeof repository.default_branch === 'string' &&
+    typeof repository.html_url === 'string' &&
+    (typeof repository.description === 'string' || repository.description === null) &&
+    (typeof repository.language === 'string' || repository.language === null) &&
+    typeof repository.stargazers_count === 'number' &&
+    typeof repository.forks_count === 'number' &&
+    typeof repository.updated_at === 'string' &&
+    typeof repository.fork === 'boolean' &&
+    typeof repository.archived === 'boolean' &&
+    Array.isArray(repository.topics) &&
+    repository.topics.every((topic) => typeof topic === 'string') &&
+    Array.isArray(repository.badges) &&
+    repository.badges.every(
+      (badge) =>
+        isRecord(badge) &&
+        typeof badge.label === 'string' &&
+        typeof badge.imageUrl === 'string',
+    ) &&
+    typeof repository.isGame === 'boolean'
   )
 }
 
-function getReadmeDescription(markdown: string) {
-  const content = markdown.replace(/^\uFEFF?---\s*\r?\n[\s\S]*?\r?\n---\s*(?:\r?\n|$)/, '')
-
-  for (const paragraph of content.replace(/```[\s\S]*?```/g, ' ').split(/\n\s*\n/)) {
-    const description = paragraph
-      .split(/\r?\n/)
-      .filter((line) => !/^\s*(?:#{1,6}\s|(?:-{3,}|\*{3,}|_{3,})\s*$)/.test(line))
-      .join(' ')
-      .replace(/<!--[\s\S]*?-->/g, ' ')
-      .replace(/!\[[^\]]*]\([^)]*\)/g, ' ')
-      .replace(/\[([^\]]+)]\([^)]*\)/g, '$1')
-      .replace(/<[^>]*>/g, ' ')
-      .replace(/[`*_~]/g, '')
-      .replace(/\s+/g, ' ')
-      .trim()
-
-    if (description) {
-      return description.length > 220 ? `${description.slice(0, 217).trimEnd()}…` : description
-    }
-  }
-
-  return null
-}
-
-function getReadmeBadges(markdown: string): ReadmeBadge[] {
-  const badges: ReadmeBadge[] = []
-  const imagePattern = /!\[([^\]]*)\]\((https?:\/\/[^)\s]+)(?:\s+"[^"]*")?\)/g
-
-  for (const match of markdown.matchAll(imagePattern)) {
-    const [, label, imageUrl] = match
-    const isBadge =
-      /shields\.io|badgen\.net|badge\.fury\.io|codecov\.io|coveralls\.io|travis-ci|circleci\.com|appveyor\.com/i.test(imageUrl) ||
-      /\/(?:badge|badges|status)(?:\/|\.|$)/i.test(imageUrl) ||
-      /\b(badge|build|coverage|license|status|version)\b/i.test(label)
-
-    if (isBadge) {
-      badges.push({ label: label || 'Repository badge', imageUrl })
-    }
-    if (badges.length === 6) break
-  }
-
-  return badges
-}
-
-async function getProfolioRepository(repository: GitHubRepository, signal: AbortSignal) {
-  let markdown: string | null = null
-  const readmeFiles = ['README.md', 'README', 'readme.md', 'readme']
-
-  for (const fileName of readmeFiles) {
-    const response = await fetch(
-      `https://raw.githubusercontent.com/${repository.full_name}/${encodeURIComponent(repository.default_branch)}/${fileName}`,
-      { signal },
-    )
-
-    if (response.status === 404) continue
-    if (!response.ok) {
-      throw new Error(`Could not check the README for ${repository.full_name} (HTTP ${response.status}).`)
-    }
-
-    markdown = await response.text()
-    break
-  }
-
-  if (markdown === null) return null
-  if (!markdown.includes(profolioMarker)) return null
-
-  return {
-    ...repository,
-    description: getReadmeDescription(markdown) ?? repository.description,
-    badges: getReadmeBadges(markdown),
-  }
+function isRepositoryCache(value: unknown): value is RepositoryCache {
+  if (!isRecord(value)) return false
+  return (
+    typeof value.updatedAt === 'string' &&
+    Array.isArray(value.repositories) &&
+    value.repositories.every(isProfolioRepository)
+  )
 }
 
 export function useProfolioRepositories() {
   const [repositories, setRepositories] = useState<ProfolioRepository[]>([])
+  const [cacheUpdatedAt, setCacheUpdatedAt] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     const controller = new AbortController()
-    let active = true
 
     async function loadRepositories() {
       try {
-        const allRepositories: GitHubRepository[] = []
-        let page = 1
-
-        while (true) {
-          const response = await fetch(
-            `https://api.github.com/users/DevHatemAlDouh/repos?type=owner&sort=updated&per_page=100&page=${page}`,
-            {
-              headers: { Accept: 'application/vnd.github+json' },
-              signal: controller.signal,
-            },
-          )
-
-          if (!response.ok) {
-            const rateLimitReset = response.headers.get('x-ratelimit-reset')
-            const resetMessage = rateLimitReset
-              ? ` Try again after ${new Date(Number(rateLimitReset) * 1000).toLocaleTimeString()}.`
-              : ''
-            throw new Error(
-              `GitHub repository request failed (HTTP ${response.status}).${response.status === 429 || response.status === 403 ? resetMessage : ''}`,
-            )
-          }
-
-          const payload: unknown = await response.json()
-          if (
-            !Array.isArray(payload) ||
-            !payload.every(isGitHubRepository)
-          ) {
-            throw new Error('GitHub returned repository data in an unexpected format.')
-          }
-
-          allRepositories.push(...payload)
-          if (payload.length < 100) break
-          page += 1
-        }
-
-        const markedRepositories: (ProfolioRepository | null)[] = []
-        for (let index = 0; index < allRepositories.length; index += 8) {
-          markedRepositories.push(
-            ...await Promise.all(
-              allRepositories
-                .slice(index, index + 8)
-                .map((repository) => getProfolioRepository(repository, controller.signal)),
-            ),
+        const response = await fetch('/repositories.json', { signal: controller.signal })
+        if (!response.ok) {
+          throw new Error(
+            `Project cache request failed (HTTP ${response.status}). Make sure the repository cache workflow has run.`,
           )
         }
+        if (!response.headers.get('content-type')?.includes('application/json')) {
+          throw new Error('The project cache URL returned HTML instead of JSON. Run the Update repository cache workflow in GitHub Actions.')
+        }
 
-        if (active) {
-          setRepositories(
-            markedRepositories
-              .filter((repository): repository is ProfolioRepository => repository !== null)
-              .sort((a, b) => Date.parse(b.updated_at) - Date.parse(a.updated_at)),
-          )
+        const payload: unknown = await response.json()
+        if (!isRepositoryCache(payload)) {
+          throw new Error('Project cache data has an unexpected format.')
+        }
+
+        if (!controller.signal.aborted) {
+          setRepositories(payload.repositories)
+          setCacheUpdatedAt(payload.updatedAt)
           setError(null)
         }
       } catch (caughtError) {
         if (controller.signal.aborted) return
-        if (active) {
-          setError(caughtError instanceof Error ? caughtError.message : 'Could not load repositories from GitHub.')
-        }
+        setError(caughtError instanceof Error ? caughtError.message : 'Could not load projects.')
       } finally {
-        if (active) setLoading(false)
+        if (!controller.signal.aborted) setLoading(false)
       }
     }
 
     void loadRepositories()
-    return () => {
-      active = false
-      controller.abort()
-    }
+    return () => controller.abort()
   }, [])
 
-  return { repositories, loading, error }
+  return { repositories, cacheUpdatedAt, loading, error }
 }
