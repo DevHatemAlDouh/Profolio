@@ -91,18 +91,20 @@ async function getProfolioRepository(repository) {
   const markdown = await getReadme(repository)
   if (markdown === null) return null
 
-  const isGame = markdown.includes(profolioGameMarker)
-  if (!isGame && !markdown.includes(profolioMarker)) return null
+  const hasProfolioMarker = markdown.includes(profolioMarker)
+  const hasProfolioGameMarker = markdown.includes(profolioGameMarker)
+  if (!hasProfolioMarker && !hasProfolioGameMarker) return null
 
   return {
     ...repository,
     description: getReadmeDescription(markdown) ?? repository.description,
     badges: getReadmeBadges(markdown),
-    isGame:
-      isGame ||
+    isGame: !hasProfolioMarker && (
+      hasProfolioGameMarker ||
       repository.language === 'GDScript' ||
       repository.topics.some((topic) => ['game', 'gamedev', 'godot'].includes(topic.toLowerCase())) ||
-      /game|fabric|bonga|hox|alphabet/i.test(repository.name),
+      /game|fabric|bonga|hox|alphabet/i.test(repository.name)
+    ),
   }
 }
 

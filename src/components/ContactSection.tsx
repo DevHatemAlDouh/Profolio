@@ -10,7 +10,7 @@ function ContactSection({ eyebrow, heading }: ContactSectionProps) {
   const year = new Date().getFullYear()
 
   return (
-    <section id="contact" className="px-5 pb-6 sm:px-8 lg:px-12">
+    <section id="contact" className="px-5 pb-24 sm:px-8 lg:px-12">
       <div className="mx-auto max-w-7xl overflow-hidden rounded-[28px] bg-[#20251f] px-6 py-14 text-white sm:px-12 sm:py-20 lg:px-16">
         <div className="grid items-end gap-8 md:grid-cols-[1fr_auto]">
           <div>
@@ -24,7 +24,7 @@ function ContactSection({ eyebrow, heading }: ContactSectionProps) {
         </div>
       </div>
       <footer className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-1 py-6 text-xs text-[#83897e] sm:flex-row">
-        <p>© {year} Hatem. Made with care.</p>
+        <p>© {year} Hatem.</p>
         <div className="flex gap-5">
           <a href="https://www.linkedin.com/in/hatem-al-douh-abb86122a/" target="_blank" rel="noreferrer" className="transition-colors hover:text-[#20251f]">LinkedIn</a>
           <a href="https://github.com/DevHatemAlDouh" target="_blank" rel="noreferrer" className="transition-colors hover:text-[#20251f]">GitHub</a>
