@@ -7,7 +7,7 @@ Profolio is a responsive portfolio built with React and TypeScript. It has separ
 ## Features
 
 - **Single-page portfolio:** Switch between web and game development without leaving the homepage.
-- **Cached GitHub project cards:** A GitHub Actions workflow refreshes the selected public repositories once a day, so visitors load a local cache instead of calling GitHub.
+- **Cached GitHub project cards:** A GitHub Actions workflow refreshes the selected public repositories once a month, so visitors load a local cache instead of calling GitHub.
 - **README-inspired details:** Project descriptions and badges are read from each repository's README.
 - **Responsive interface:** Layouts adapt to mobile, tablet, and desktop screens.
 - **Tech-inspired theme:** Dark surfaces, cyan accents, and subtle grid details.
@@ -84,7 +84,7 @@ scripts/            # Generates the GitHub repository cache
 
 ## Project selection
 
-The GitHub Actions workflow reads **public repositories** from the `DevHatemAlDouh` GitHub account and saves selected project data to `public/repositories.json`. The site reads that file, so visitors do not make GitHub API requests. The workflow refreshes the cache daily and on pushes to `main`.
+The GitHub Actions workflow reads **public repositories** from the `DevHatemAlDouh` GitHub account and saves selected project data to `public/repositories.json`. The site reads that file, so visitors do not make GitHub API requests. The workflow refreshes the cache monthly and on pushes to `main`.
 
 ### Initialize or refresh the cache
 
@@ -95,7 +95,7 @@ The starter `public/repositories.json` contains no projects. To generate it:
 3. If the cache has not been generated yet, choose **Run workflow**, select `main`, and confirm.
 4. Wait for the run to succeed. It commits the generated cache, which should trigger a Netlify deploy if the repository is connected.
 
-The workflow also runs automatically once a day. If it fails to push the updated cache, check **Settings → Actions → General → Workflow permissions** and allow read and write access to the repository. No personal access token or Netlify environment variable is needed; the workflow uses its automatically provided `GITHUB_TOKEN`.
+The workflow also runs automatically on the first day of each month. If it fails to push the updated cache, check **Settings → Actions → General → Workflow permissions** and allow read and write access to the repository. No personal access token or Netlify environment variable is needed; the workflow uses its automatically provided `GITHUB_TOKEN`.
 
 Add this marker to a web or software repository's README to include it:
 
