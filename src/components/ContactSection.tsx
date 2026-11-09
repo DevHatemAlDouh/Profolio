@@ -18,7 +18,7 @@ function ContactSection({ eyebrow, heading }: ContactSectionProps) {
             <h2 className="max-w-2xl text-4xl leading-[1.04] font-medium tracking-[-0.06em] sm:text-6xl">{heading}</h2>
             <p className="mt-5 max-w-md text-sm leading-6 text-white/60">Have a project, a question, or just want to say hello? My inbox is always open.</p>
           </div>
-          <a href="mailto:hello@example.com" className="group inline-flex w-fit items-center gap-3 rounded-full bg-[#d6f36a] px-6 py-4 text-sm font-semibold text-[#20251f] transition-colors hover:bg-white">
+          <a href="mailto:hatemaldouh@gmail.com" className="group inline-flex w-fit items-center gap-3 rounded-full bg-[#d6f36a] px-6 py-4 text-sm font-semibold text-[#20251f] transition-colors hover:bg-white">
             Say hello <span className="transition-transform group-hover:translate-x-1"><ArrowIcon /></span>
           </a>
         </div>
@@ -26,9 +26,9 @@ function ContactSection({ eyebrow, heading }: ContactSectionProps) {
       <footer className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-1 py-6 text-xs text-[#83897e] sm:flex-row">
         <p>© {year} Hatem. Made with care.</p>
         <div className="flex gap-5">
-          <a href="https://www.linkedin.com/" target="_blank" rel="noreferrer" className="transition-colors hover:text-[#20251f]">LinkedIn</a>
-          <a href="https://github.com/" target="_blank" rel="noreferrer" className="transition-colors hover:text-[#20251f]">GitHub</a>
-          <a href="mailto:hello@example.com" className="transition-colors hover:text-[#20251f]">Email</a>
+          <a href="https://www.linkedin.com/in/hatem-al-douh-abb86122a/" target="_blank" rel="noreferrer" className="transition-colors hover:text-[#20251f]">LinkedIn</a>
+          <a href="https://github.com/DevHatemAlDouh" target="_blank" rel="noreferrer" className="transition-colors hover:text-[#20251f]">GitHub</a>
+          <a href="mailto:hatemaldouh@gmail.com" className="transition-colors hover:text-[#20251f]">Email</a>
         </div>
       </footer>
     </section>

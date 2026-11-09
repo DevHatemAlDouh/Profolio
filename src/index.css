@@ -31,6 +31,7 @@ body {
   --tech-muted: #9aaac0;
   --tech-accent: #65e8dc;
   --tech-accent-strong: #a4fff3;
+  overflow-x: clip;
   color: var(--tech-text);
   background:
     radial-gradient(ellipse at 50% -18%, rgb(33 82 105 / 28%), transparent 48%),
